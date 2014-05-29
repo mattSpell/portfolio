@@ -7,6 +7,17 @@ html
     link(href='/css/buttons.css', rel='stylesheet')
     link(href='/less/app.css', rel='stylesheet')
   body
+    #nav
+      ul
+        li: a.nav(href='/') Home
+        li: a.nav(href='/about') About
+        li: a.nav(href='/contact') Contact
+        li: a.nav(href='/resume') Resume
+        li: a.nav(href='/projects') Portfolio
+        if(user)
+          li: a(href='/logout')= user.email
+          li: a(href='/projects/new') New Project
+
     block content
 
     script(src='/js/vendor/jquery-2.1.1.js')

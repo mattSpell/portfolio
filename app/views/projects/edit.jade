@@ -1,0 +1,17 @@
+extends ../shared/template
+block content
+  h1 Edit Project
+
+  form(action='/projects/#{project._id}/update', method='post')
+    input(type='text', name='title', placeholder='Title', value='#{project.title}')
+    input(type='text', name='tags', placeholder='Tags', value='#{project.tags}')
+    input(type='text', name='git', placeholder='Git Url', value='#{project.git}')
+    input(type='text', name='app', placeholder='App Url', value='#{project.app}')
+    textarea(name='description', placeholder='Description')= project.description
+    input(type='hidden', name='_method', value='put')
+    button Save
+
+
+
+
+block scripts

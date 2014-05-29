@@ -1,0 +1,24 @@
+extends ../shared/template
+
+block content
+  h1= project.title
+
+  .project
+    //- h1: a(href='/projects/#{project._id}')= project.title
+    each photo in project.photos
+      .imgcontain
+        img(src='#{photo}')
+      //- form(method='POST', action='/projects/#{project._id}')
+      //-       input(type='hidden', name='_method', value='DELETE')
+      //-       button.delete Delete
+    h3= project.description
+    h3= project.date
+    h3= project.tags
+    ul
+      li: a(href=project.git) Github
+      li: a(href=project.app) Amazon EC2
+      form(method='POST', action='/projects/#{project._id}')
+            input(type='hidden', name='_method', value='DELETE')
+            button.delete Delete
+      if(user)
+        a(href='/projects/#{project._id}/edit') Edit
