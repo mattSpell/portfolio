@@ -18,7 +18,8 @@ function load(app, fn){
   var users = traceur.require(__dirname + '/../routes/users.js');
   var projects = traceur.require(__dirname + '/../routes/projects.js');
 
-  app.all('*', dbg, users.lookup);
+  app.all('*', users.lookup);
+
   app.get('/', dbg, home.index);
   app.get('/about', dbg, home.about);
   app.get('/contact', dbg, home.contact);
@@ -28,16 +29,19 @@ function load(app, fn){
   app.post('/login', dbg, users.authenticate);
   app.get('/logout', dbg, users.logout);
 
-  app.get('/projects/new', dbg, projects.new);
   app.get('/projects', dbg, projects.index);
-  app.post('/projects', dbg, projects.create);
+  app.get('/projects/new', dbg, projects.new);
   app.get('/projects/:id', dbg, projects.show);
-  app.get('/projects/:id/edit', dbg, projects.edit);
-  app.put('/projects/:id/update', dbg, projects.update);
-  
+
+  app.all('*', users.bounce);
+
+  app.post('/projects', dbg, projects.create);
   app.delete('/projects/:id', dbg, projects.destroy);
-
-
+  app.put('/projects/:id', dbg, projects.update);
+  app.get('/projects/:id/edit', dbg, projects.edit);
+  app.post('/projects/:id/photos', dbg, projects.addPhoto);
+  app.delete('/projects/:id/photos/:name', dbg, projects.delPhoto);
+  app.put('/projects/:id/photos/:name', dbg, projects.setPrimary);
 
   console.log('Routes Loaded');
   fn();

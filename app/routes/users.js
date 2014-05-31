@@ -10,7 +10,7 @@ exports.authenticate = (req, res)=>{
   User.login(req.body, u=>{
     if(u){
       req.session.userId = u._id;
-      res.redirect('/portfolio');
+      res.redirect('/projects');
     } else{
       req.session.userId = null;
       res.redirect('/login');
@@ -28,4 +28,12 @@ exports.lookup = (req, res, next)=>{
 exports.logout = (req, res)=>{
   req.session.userId = null;
   res.redirect('/');
+};
+
+exports.bounce = (req, res, next)=>{
+  if(res.locals.user){
+    next();
+  }else{
+    res.redirect('/');
+  }
 };

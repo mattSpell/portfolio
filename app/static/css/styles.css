@@ -1,0 +1,81 @@
+html,
+body {
+  height: 100%;
+  font-family: 'PT Serif', serif;
+}
+
+h1, h2, h3, h4{
+  font-family: 'PT Serif', serif;
+}
+.divide{
+  position: relative;
+  display: block;
+  height: 1em;
+}
+.stuff{
+  margin: 1em;
+}
+.row{
+  margin-bottom: 1em;
+}
+
+#wrap {
+  min-height: 100%;
+  width: 80%;
+  height: 100%;
+  /* Negative indent footer by its height */
+  margin: auto;
+  /* Pad bottom by footer height */
+  padding: 0 0 80px 0;
+}
+#guard{
+  height: 4em;
+
+}
+#me{
+  position: relative;
+  width: 30em;
+  border: 1px solid black;
+  text-align: center;
+  margin: auto;
+}
+
+/* Set the fixed height of the footer here */
+#footer {
+  height: 80px;
+  background-color: #f5f5f5;
+}
+
+
+#wrap > .center-container {
+  padding: 50px 0 0 0;
+  margin:0;
+}
+
+#footer > .container {
+  padding-top:5px
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.center-container {
+  height:100%;
+  display: table;
+  width:100%;
+  margin:0;
+}
+
+.center-row {
+  height:50%;
+  width:100%;
+  display: table-row;
+}
+
+.center-row > div {
+  height:100%;
+  width:50%;
+  display: table-cell;
+  border:0 solid #eee;
+  color:#fff;
+  vertical-align:middle;
+}

@@ -4,19 +4,56 @@ html
     meta(charset='utf-8')
     title= title
     link(href='/css/normalize.css', rel='stylesheet')
-    link(href='/css/buttons.css', rel='stylesheet')
+    link(href='/css/bootstrap.min.css', rel='stylesheet')
+    link(href='/css/styles.css' rel='stylesheet')
     link(href='/less/app.css', rel='stylesheet')
+    link(href='http://fonts.googleapis.com/css?family=PT+Serif' rel='stylesheet')
+    meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1')
+
   body
-    #nav
-      ul
-        li: a.nav(href='/') Home
-        li: a.nav(href='/about') About
-        li: a.nav(href='/contact') Contact
-        li: a.nav(href='/resume') Resume
-        li: a.nav(href='/projects') Portfolio
-        if(user)
-          li: a(href='/logout')= user.email
-          li: a(href='/projects/new') New Project
+    #guard
+      .navbar.navbar-default.navbar-fixed-top
+        .container
+          .navbar-header
+            button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
+              span.icon-bar
+              span.icon-bar
+              span.icon-bar
+            //- a.navbar-brand(href='/') Matt Spell
+          .collapse.navbar-collapse
+            ul.nav.navbar-nav
+              li
+                a(href='/') Home
+              li
+                a(href='/about') About
+              li
+                a(href='/contact') Contact
+              li
+                a(href='/resume') Resume
+              li
+                a(href='/projects') Portfolio
+              if(user)
+                li: a(href='/logout')= user.email
+                li: a(href='/projects/new') New Project
+
+    //- #footer
+    //-   .container
+    //-     p  
+    //-     p.lead
+          //- | Matt Spell
+
+
+
+    //- #nav
+    //-   ul
+    //-     li: a.nav(href='/') Home
+    //-     li: a.nav(href='/about') About
+    //-     li: a.nav(href='/contact') Contact
+    //-     li: a.nav(href='/resume') Resume
+    //-     li: a.nav(href='/projects') Portfolio
+        //- if(user)
+        //-   li: a(href='/logout')= user.email
+        //-   li: a(href='/projects/new') New Project
 
     block content
 
@@ -27,6 +64,9 @@ html
     script(src='/js/vendor/traceur.js')
     script(src='/socket.io/socket.io.js')
     script(src='/js/es5/main.js')
+    script(src='//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js')
+    script(src='/js/vendor/bootstrap.min.js')
+    script(src='/js/vendor/scripts.js')
     script(src='/js/es6/compiled/main.js')
     script(src='/js/es6/compiled/sockets.js')
 

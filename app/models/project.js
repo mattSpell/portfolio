@@ -6,43 +6,108 @@ var projects = global.nss.db.collection('projects');
 var fs = require('fs');
 var path = require('path');
 var Mongo = require('mongodb');
-var rimraf = require('rimraf');
 var _ = require('lodash');
+var rimraf = require('rimraf');
+var crypto = require('crypto');
+var moment = require('moment');
 
 class Project{
   static create(userId, fields, files, fn){
     var project = new Project();
+    project._id = Mongo.ObjectID();
     project.title = fields.title[0].trim();
     project.description = fields.description[0].trim();
     project.tags = fields.tags[0].split(',').map(t=>t.toLowerCase()).map(t=>t.trim());
     project.git = fields.git[0].trim();
     project.app = fields.app[0].trim();
-    project.date = new Date(fields.date[0]);
+    project.order = 0;
+    var roughDate = new Date(fields.date[0]);
+    var day = roughDate.getDate();
+    var month = roughDate.getMonth();
+    var year = roughDate.getFullYear();
+    project.date = `${day}/${month}/${year}`;
+
     project.userId = userId;
-    project.photos = [{}];
+    project.photos = [];
     project.processPhotos(files.photos);
-    projects.save(project, (e,p)=>fn(p));
+    projects.save(project, ()=>fn(project));
+  }
+
+  update(obj, fn){
+    this.title = obj.title.trim();
+    this.description = obj.description.trim();
+    this.tags = obj.tags.split(',').map(t=>t.toLowerCase()).map(t=>t.trim());
+    this.git = obj.git.trim();
+    this.app = obj.app.trim();
+    this.date = new Date(obj.date);
+    // var roughDate = new Date(obj.date);
+    // var day = roughDate.getDate();
+    // var month = roughDate.getMonth();
+    // var year = roughDate.getFullYear();
+    //
+    // this.date = `${day}/${month}/${year}`;
+    projects.save(this, ()=>fn());
   }
 
   processPhotos(photos){
-    photos.forEach((p,i)=>{
-      if(i===0){
-        p.isPrimary = true;
-      } else{
-        p.isPrimary = false;
+    photos.forEach(p=>{
+      if(p.size){
+        var name = crypto.randomBytes(12).toString('hex') + path.extname(p.originalFilename).toLowerCase();
+        var file = `/img/${this.userId}/${this._id}/${name}`;
+
+        var photo = {};
+        photo.name = name;
+        photo.file = file;
+        photo.size = p.size;
+        photo.orig = p.originalFilename;
+        photo.isPrimary = false;
+
+        var userDir = `${__dirname}/../static/img/${this.userId}`;
+        var projDir = `${userDir}/${this._id}`;
+        var fullDir = `${projDir}/${name}`;
+
+        if(!fs.existsSync(userDir)){fs.mkdirSync(userDir);}
+        if(!fs.existsSync(projDir)){fs.mkdirSync(projDir);}
+
+        fs.renameSync(p.path, fullDir);
+
+        this.projDir = path.normalize(projDir);
+        this.photos.push(photo);
       }
-      var title = this.title.toLowerCase().replace(/[^\w]/g, '');
-      var photo = `/img/${this.userId}/${title}/${i}${path.extname(p.originalFilename)}`;
-      this.photos.push(photo);
+    });
+  }
 
-      var userDir = `${__dirname}/../static/img/${this.userId}`;
-      var projDir = `${userDir}/${title}`;
-      var fullDir = `${projDir}/${i}${path.extname(p.originalFilename)}`;
+  isOwner(user){
+    return user._id.toString() === this.userId.toString();
+  }
 
-      if(!fs.existsSync(userDir)){fs.mkdirSync(userDir);}
-      if(!fs.existsSync(projDir)){fs.mkdirSync(projDir);}
+  destroy(fn){
+    projects.findAndRemove({_id:this._id}, ()=>{
+      if(this.projDir){
+        rimraf(this.projDir, fn);
+      }else{
+        fn();
+      }
+    });
+  }
 
-      fs.renameSync(p.path, fullDir);
+  addPhoto(photos, fn){
+    this.processPhotos(photos);
+    projects.save(this, ()=>fn());
+  }
+
+  delPhoto(name, fn){
+    projects.update({_id:this._id}, {$pull:{photos:{name:name}}}, ()=>{
+      fs.unlinkSync(`${this.projDir}/${name}`);
+      fn();
+    });
+  }
+
+  setPrimary(name, fn){
+    projects.update({_id:this._id, 'photos.isPrimary':true}, {$set:{'photos.$.isPrimary':false}}, ()=>{
+      projects.update({_id:this._id, 'photos.name':name}, {$set:{'photos.$.isPrimary':true}}, ()=>{
+        fn();
+      });
     });
   }
 
@@ -56,30 +121,6 @@ class Project{
       p = _.create(Project.prototype, p);
       fn(p);
     });
-  }
-
-  killFiles(fn){
-    var path = `${__dirname}/../static/img/${this.userId}/${this.title.toLowerCase().replace(/[^\w]/g, '')}`;
-    rimraf.sync(path);
-    projects.findAndRemove({_id: this._id}, ()=>{
-      fn();
-    });
-  }
-
-  update(updates, fn){
-    this.title = updates.title;
-    this.description = updates.description;
-    this.tags = [updates.tags];
-    this.git = updates.git;
-    this.app = updates.app;
-
-    projects.save(this, (e, u)=>{
-      fn(u);
-    });
-  }
-
-  isOwner(user){
-
   }
 }
 
