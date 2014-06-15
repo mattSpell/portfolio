@@ -2,28 +2,26 @@ extends ../shared/template
 block content
 
   #wrap
-    h1 Portfolio
+    //- h1 Portfolio
     .row
         .col-lg-12
           h1.page-header
-            //- | 1 Col Portfolio
             small Project List
-      each project in projects
-        .row
-          .col-lg-7.col-md-7
-            a(href='/projects/#{project._id}')
-              each photo in project.photos
-                if(photo.isPrimary)
-                  .photo.img-responsive(style='background-image:url("#{photo.file}")')
-          .col-lg-5.col-md-5
-            h3= project.title
-            //- h4 Subheading
-            p= project.description
-            a.btn.btn-primary(href='/projects/#{project._id}')
-              | View Project
-              span.glyphicon.glyphicon-chevron-right
 
-
+  
+  each project in projects
+    .row
+      .col-lg-6.col-md-6
+        a(href='/projects/#{project._id}')
+          each photo in project.photos
+            if(photo.isPrimary)
+              .photo.img-responsive(style='background-image:url("#{photo.file}")')
+      .col-lg-5.col-md-5
+        h3= project.title
+        p= project.description
+        a.btn.btn-primary(href='/projects/#{project._id}')
+          | View Project
+          span.glyphicon.glyphicon-chevron-right
 
   //- #projects
   //-   each project in projects

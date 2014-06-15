@@ -26,7 +26,7 @@ exports.lookup = (req, res, next)=>{
 };
 
 exports.logout = (req, res)=>{
-  req.session.userId = null;
+  req.session = null;
   res.redirect('/');
 };
 
