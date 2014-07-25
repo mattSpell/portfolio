@@ -1,5 +1,6 @@
-Server Template
+Portfolio
 ===============
+This is my portfolio. It is a Node/Mongo app which incorporates:
 
 - Node.js
 - Express
