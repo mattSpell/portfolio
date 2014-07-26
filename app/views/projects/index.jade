@@ -9,7 +9,7 @@ block content
   each project in projects
     .row.index
       .col-lg-6.col-md-6
-        a(href='/projects/#{project._id}')
+        a(href='#{project.app}')
           each photo in project.photos
             if(photo.isPrimary)
               img.photo.img-responsive(src= "#{photo.file}")
