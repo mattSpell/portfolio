@@ -40,12 +40,6 @@ class Project{
     this.git = obj.git.trim();
     this.app = obj.app.trim();
     this.date = new Date(obj.date);
-    // var roughDate = new Date(obj.date);
-    // var day = roughDate.getDate();
-    // var month = roughDate.getMonth();
-    // var year = roughDate.getFullYear();
-    //
-    // this.date = `${day}/${month}/${year}`;
     projects.save(this, ()=>fn());
   }
 
@@ -54,23 +48,18 @@ class Project{
       if(p.size){
         var name = crypto.randomBytes(12).toString('hex') + path.extname(p.originalFilename).toLowerCase();
         var file = `/img/${this.userId}/${this._id}/${name}`;
-
         var photo = {};
         photo.name = name;
         photo.file = file;
         photo.size = p.size;
         photo.orig = p.originalFilename;
         photo.isPrimary = false;
-
         var userDir = `${__dirname}/../static/img/${this.userId}`;
         var projDir = `${userDir}/${this._id}`;
         var fullDir = `${projDir}/${name}`;
-
         if(!fs.existsSync(userDir)){fs.mkdirSync(userDir);}
         if(!fs.existsSync(projDir)){fs.mkdirSync(projDir);}
-
         fs.renameSync(p.path, fullDir);
-
         this.projDir = path.normalize(projDir);
         this.photos.push(photo);
       }
